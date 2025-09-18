@@ -431,11 +431,17 @@ function showResult(){
   form.style.display = "none";
 
   // GAS送信
+  const payload = { name, gender, score, answers };
+  console.log("送信データ確認:", payload);
+
   fetch("https://script.google.com/macros/s/AKfycbxe7oZJ15AhQFh1L5fxBEWiu_J5TD0GsKtW8ffYRRNqCAfRZkNTEjkkI7plQAc6yVaxEQ/exec", {
     method: "POST",
-    body: JSON.stringify({ name, gender, score, answers }),
+    body: JSON.stringify(payload),
     headers: { "Content-Type": "application/json" }
-  }).then(r=>r.json()).then(console.log).catch(console.error);
+  })
+  .then(res => res.text())
+  .then(r => console.log("GASレスポンス:", r))
+  .catch(err => alert("送信エラーが発生しました。再度お試しください。"));
 }
 </script>
 </body>
