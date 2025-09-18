@@ -301,18 +301,17 @@ function calculateScore() {
     `【${name}さん】 合計 ${score} 点 → ${resultText}`;
 
   // スプレッドシートに送信
-  fetch(SCRIPT_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      name: name,
-      gender: gender,
-      result: resultText
-    }),
-    headers: { "Content-Type": "application/json" },
+fetch(SCRIPT_URL, {
+  method: "POST",
+  body: JSON.stringify({
+    name: name,
+    gender: gender,
+    result: resultText
   })
-  .then(res => res.text())
-  .then(txt => console.log("保存結果:", txt))
-  .catch(err => console.error("エラー:", err));
+})
+.then(res => res.json())
+.then(data => console.log("保存結果:", data))
+.catch(err => console.error("エラー:", err));
 }
 </script>
 
