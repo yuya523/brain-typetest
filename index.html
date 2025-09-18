@@ -1,36 +1,52 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>脳タイプ診断</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>脳タイプ診断</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
-    margin: 0; padding: 20px; background-color: #f9f9f9; color: #333; line-height: 1.6;
-  }
-  h1 { font-size: 1.6rem; text-align: center; margin-bottom: 20px; }
-  input[type="text"], select {
-    width: 100%; padding: 14px 10px; font-size: 1rem; border-radius: 8px; border: 1px solid #ccc; margin-bottom: 15px; box-sizing: border-box;
-  }
-  .question { display: none; background: #fff; border-radius: 10px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 15px; }
-  .question.active { display: block; }
-  .question p { font-size: 1.1rem; font-weight: bold; margin-bottom: 10px; }
-  .question label { display: block; font-size: 1rem; padding: 14px 15px; border-radius: 10px; cursor: pointer; margin-bottom: 10px; border: 1px solid #ddd; background: #fff; transition: background 0.2s, border-color 0.2s; }
-  .question label:hover { background: #f0f0f0; border-color: #aaa; }
-  .question input[type="radio"] { display: none; }
-  .question input[type="radio"]:checked + span { background: #007bff; color: #fff; border-color: #0056b3; }
-  .btn { display: block; width: 100%; padding: 16px 0; font-size: 1.1rem; border: none; border-radius: 10px; background: #007bff; color: #fff; cursor: pointer; margin-top: 15px; transition: background 0.2s; }
-  .btn:hover { background: #0056b3; }
-  #result { display: none; text-align: center; font-size: 1.2rem; margin-top: 20px; padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-  @media (max-width: 600px) {
-    body { padding: 15px; }
-    h1 { font-size: 1.4rem; }
-    .question p { font-size: 1rem; }
-    .question label { font-size: 1rem; padding: 14px 15px; }
-    .btn { font-size: 1.1rem; padding: 16px 0; }
-    input[type="text"], select { font-size: 1rem; padding: 14px 10px; }
-  }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
+  margin: 0; padding: 20px;
+  background-color: #f9f9f9; color: #333; line-height: 1.6;
+}
+h1 { font-size: 1.6rem; text-align: center; margin-bottom: 20px; }
+
+input[type="text"], select {
+  width: 100%; padding: 14px 10px; font-size: 1rem;
+  border-radius: 8px; border: 1px solid #ccc; margin-bottom: 15px; box-sizing: border-box;
+}
+
+.question { display: none; background: #fff; border-radius: 10px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 15px; }
+.question.active { display: block; }
+.question p { font-size: 1.1rem; font-weight: bold; margin-bottom: 10px; }
+
+.question label {
+  display: block; font-size: 1rem; padding: 14px 15px; border-radius: 10px; cursor: pointer;
+  margin-bottom: 10px; border: 1px solid #ddd; background: #fff; transition: background 0.2s, border-color 0.2s;
+}
+.question label:hover { background: #f0f0f0; border-color: #aaa; }
+.question input[type="radio"] { display: none; }
+.question input[type="radio"]:checked + span { 
+  background: #28a745; color: #fff; border-color: #218838; 
+}
+
+.btn {
+  display: block; width: 100%; padding: 16px 0; font-size: 1.1rem; border: none;
+  border-radius: 10px; background: #007bff; color: #fff; cursor: pointer; margin-top: 15px; transition: background 0.2s;
+}
+.btn:hover { background: #0056b3; }
+
+#result { display: none; text-align: center; font-size: 1.2rem; margin-top: 20px; padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+
+@media (max-width: 600px) {
+  body { padding: 15px; }
+  h1 { font-size: 1.4rem; }
+  .question p { font-size: 1rem; }
+  .question label { font-size: 1rem; padding: 14px 15px; }
+  .btn { font-size: 1.1rem; padding: 16px 0; }
+  input[type="text"], select { font-size: 1rem; padding: 14px 10px; }
+}
 </style>
 </head>
 <body>
@@ -46,18 +62,15 @@
   <button id="startBtn" class="btn">診断を開始</button>
 </div>
 
-<form id="quizForm"></form>
-<div id="result"></div>
-
-<!-- 非表示iframeでフォーム送信 -->
-<iframe name="hidden_iframe" style="display:none;"></iframe>
-
-<form target="hidden_iframe" action="https://script.google.com/macros/s/AKfycbxe7oZJ15AhQFh1L5fxBEWiu_J5TD0GsKtW8ffYRRNqCAfRZkNTEjkkI7plQAc6yVaxEQ/exec" method="POST" target="hidden_iframe">
-  <input type="hidden" name="name">
-  <input type="hidden" name="gender">
-  <input type="hidden" name="score">
-  <input type="hidden" name="answers">
+<form id="quizForm" action="https://script.google.com/macros/s/AKfycbxe7oZJ15AhQFh1L5fxBEWiu_J5TD0GsKtW8ffYRRNqCAfRZkNTEjkkI7plQAc6yVaxEQ/exec" method="post" target="hidden_iframe">
+  <input type="hidden" name="name" id="hiddenName">
+  <input type="hidden" name="gender" id="hiddenGender">
+  <input type="hidden" name="score" id="hiddenScore">
+  <input type="hidden" name="answers" id="hiddenAnswers">
 </form>
+
+<iframe name="hidden_iframe" style="display:none;"></iframe>
+<div id="result"></div>
 
 <script>
 const questions = [
@@ -273,6 +286,7 @@ const questions = [
   }
 ];
 
+// スコア加点ルール
 const scoreMap = {
   male: {a:10, b:5, c:-5, none:5},
   female: {a:15, b:5, c:-5, none:5}
@@ -281,7 +295,6 @@ const scoreMap = {
 const form = document.getElementById("quizForm");
 const resultDiv = document.getElementById("result");
 const userInfoDiv = document.getElementById("userInfo");
-const submitForm = document.getElementById("submitForm");
 
 document.getElementById("startBtn").addEventListener("click", () => {
   const name = document.getElementById("name").value.trim();
@@ -292,7 +305,7 @@ document.getElementById("startBtn").addEventListener("click", () => {
 });
 
 function generateQuestions(){
-  questions.forEach((q,index)=>{
+  questions.forEach((q, index) => {
     const div = document.createElement("div");
     div.classList.add("question");
     if(index===0) div.classList.add("active");
@@ -311,7 +324,7 @@ function generateQuestions(){
     btn.type = "button";
     btn.classList.add("btn");
     btn.textContent = (index===questions.length-1) ? "結果を見る" : "次へ";
-    btn.addEventListener("click", ()=>nextQuestion(index));
+    btn.addEventListener("click", () => nextQuestion(index));
     div.appendChild(btn);
 
     form.appendChild(div);
@@ -343,7 +356,15 @@ function showResult(){
     score += scoreMap[gender][selected];
   });
 
-  // 判定
+  // hidden input にセットして送信
+  document.getElementById("hiddenName").value = name;
+  document.getElementById("hiddenGender").value = gender;
+  document.getElementById("hiddenScore").value = score;
+  document.getElementById("hiddenAnswers").value = JSON.stringify(answers);
+
+  form.submit();
+
+  // 結果表示
   let resultText = "";
   if(score <= -1) resultText = "完全な男脳";
   else if(score <= 150) resultText = "男脳";
@@ -355,13 +376,6 @@ function showResult(){
   resultDiv.innerHTML = `<h2>${resultText}</h2><p>合計スコア: ${score}点</p>`;
 
   form.style.display = "none";
-
-  // GAS送信（非表示iframe経由）
-  submitForm.name.value = name;
-  submitForm.gender.value = gender;
-  submitForm.score.value = score;
-  submitForm.answers.value = JSON.stringify(answers);
-  submitForm.submit();
 }
 </script>
 </body>
