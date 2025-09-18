@@ -1,72 +1,128 @@
-/* ベーススタイル */
+/* 共通ボディ設定 */
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
-  margin: 0;
-  padding: 20px;
-  background-color: #f9f9f9;
-  color: #333;
-  line-height: 1.6;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    background-color: #ffffff;
+    color: #333;
+    margin: 0;
+    padding: 0;
 }
 
-/* 見出し */
-h1 {
-  font-size: 1.6rem;
-  text-align: center;
-  margin-bottom: 20px;
-  color: #222;
+/* アンケート全体コンテナ */
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 16px;
 }
 
-/* 設問ブロック */
+/* 設問コンテナ */
 .question {
-  background: #fff;
-  border-radius: 10px;
-  padding: 15px;
-  margin-bottom: 15px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px 0;
 }
 
 /* 設問文 */
-.question p {
-  font-size: 1.1rem;
-  font-weight: bold;
-  margin-bottom: 10px;
-  color: #111;
+.question li p {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 12px;
 }
 
-/* 選択肢 */
-.question label {
-  display: block;
-  font-size: 0.95rem;
-  padding: 8px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.2s;
+/* 選択肢ラベルをボタン風に */
+.question li label {
+    display: block;
+    padding: 14px 16px;
+    margin: 6px 0;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
 }
 
-/* 選択肢 hover */
-.question label:hover {
-  background: #f0f0f0;
+/* ホバー時の変化 */
+.question li label:hover {
+    border-color: #888;
+    background-color: #f0f0f0;
 }
 
-/* ラジオボタン */
-.question input[type="radio"] {
-  margin-right: 8px;
-  transform: scale(1.2); /* 少し大きめで押しやすく */
+/* 選択中のラベル */
+.question li input[type="radio"]:checked + label {
+    border-color: #007BFF;
+    background-color: #cce5ff;
 }
 
-/* スマホでの余白調整 */
-@media (max-width: 600px) {
-  body {
-    padding: 15px;
-  }
-  h1 {
-    font-size: 1.4rem;
-  }
-  .question p {
-    font-size: 1rem;
-  }
-  .question label {
-    font-size: 0.9rem;
-    padding: 6px 8px;
-  }
+/* ラジオボタン非表示 */
+.question li input[type="radio"] {
+    display: none;
+}
+
+/* 次へボタン・結果表示ボタン */
+button {
+    display: block;
+    width: 100%;
+    padding: 14px 16px;
+    margin: 20px 0;
+    font-size: 18px;
+    font-weight: 500;
+    color: #fff;
+    background-color: #007BFF;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* 名前・性別フォーム */
+input[type="text"], select {
+    width: 100%;
+    padding: 12px 14px;
+    margin: 8px 0 16px 0;
+    font-size: 16px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+
+/* 結果表示エリア */
+#result {
+    font-size: 20px;
+    font-weight: 600;
+    padding: 16px;
+    margin-top: 16px;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    text-align: center;
+}
+
+/* ページ送り非表示設問 */
+.question:not(.active) {
+    display: none;
+}
+
+/* スマホ最適化 */
+@media screen and (max-width: 480px) {
+    .question li p {
+        font-size: 16px;
+    }
+
+    .question li label {
+        font-size: 15px;
+        padding: 12px 14px;
+    }
+
+    button {
+        font-size: 16px;
+        padding: 12px 14px;
+    }
+
+    input[type="text"], select {
+        font-size: 15px;
+        padding: 10px 12px;
+    }
 }
