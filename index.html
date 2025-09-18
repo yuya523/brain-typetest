@@ -1,320 +1,377 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<link rel="stylesheet" href="style.css">
-<title>脳タイプ診断</title>
+  <meta charset="UTF-8">
+  <title>脳タイプ診断</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f9f9f9;
+      color: #333;
+      line-height: 1.6;
+    }
+    h1 { font-size: 1.6rem; text-align: center; margin-bottom: 20px; }
+
+    input[type="text"], select {
+      width: 100%; padding: 14px 10px; font-size: 1rem;
+      border-radius: 8px; border: 1px solid #ccc; margin-bottom: 15px;
+      box-sizing: border-box;
+    }
+
+    .question { display: none; background: #fff; border-radius: 10px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 15px; }
+    .question.active { display: block; }
+    .question p { font-size: 1.1rem; font-weight: bold; margin-bottom: 10px; }
+
+    .question label {
+      display: block; font-size: 1rem; padding: 14px 15px; border-radius: 10px; cursor: pointer;
+      margin-bottom: 10px; border: 1px solid #ddd; background: #fff; transition: background 0.2s, border-color 0.2s;
+    }
+    .question label:hover { background: #f0f0f0; border-color: #aaa; }
+    .question input[type="radio"] { display: none; }
+    .question input[type="radio"]:checked + span { background: #007bff; color: #fff; border-color: #0056b3; }
+
+    .btn { display: block; width: 100%; padding: 16px 0; font-size: 1.1rem; border: none; border-radius: 10px; background: #007bff; color: #fff; cursor: pointer; margin-top: 15px; transition: background 0.2s; }
+    .btn:hover { background: #0056b3; }
+
+    #result { display: none; text-align: center; font-size: 1.2rem; margin-top: 20px; padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+
+    @media (max-width: 600px) {
+      body { padding: 15px; }
+      h1 { font-size: 1.4rem; }
+      .question p { font-size: 1rem; }
+      .question label { font-size: 1rem; padding: 14px 15px; }
+      .btn { font-size: 1.1rem; padding: 16px 0; }
+      input[type="text"], select { font-size: 1rem; padding: 14px 10px; }
+    }
+  </style>
 </head>
 <body>
-  <h1>脳タイプ診断</h1>
+<h1>脳タイプ診断</h1>
 
-  <!-- 名前入力 -->
-  <label>名前：</label>
-  <input type="text" id="username" required><br><br>
-
-  <!-- 性別選択 -->
-  <label>性別：</label>
+<div id="userInfo">
+  <input type="text" id="name" placeholder="お名前を入力">
   <select id="gender">
+    <option value="">性別を選択</option>
     <option value="male">男性</option>
     <option value="female">女性</option>
   </select>
+  <button id="startBtn" class="btn">診断を開始</button>
+</div>
 
-  <form id="quizForm">
-  <ol>
-    <li>
-        <p>マップや市街図を見るとき</p>
-        <label><input type="radio" name="q1" value="a"> a. なかなか理解できなくて、結局誰かに聞いてしまう</label><br>
-        <label><input type="radio" name="q1" value="b"> b. そんなものは見ずに、自分の行きたい道を行く</label><br>
-        <label><input type="radio" name="q1" value="c"> c. なんの苦も無く理解できる</label><br>
-        <label><input type="radio" name="q1" value="none"> あてはまるものはない</label>
-    </li>
-
-    <li>
-        <p>ラジオの鳴っているキッチンで、手の込んだ料理を作っている。そこに友人から電話がかかってきた</p>
-        <label><input type="radio" name="q2" value="a"> a. 友人と電話で話しながら、料理を続ける。ラジオもそのまま。</label><br>
-        <label><input type="radio" name="q2" value="b"> b. ラジオを消して、友人と話しながら料理を続ける</label><br>
-        <label><input type="radio" name="q2" value="c"> c. 「料理中だから、終わったらかけなおす」と言って電話を切る</label><br>
-        <label><input type="radio" name="q2" value="none"> あてはまるものはない</label>
-    </li>
-
-    <li>
-        <p>あなたの家を初めて訪れる友人に、行き方を聞かれたら？</p>
-        <label><input type="radio" name="q3" value="a"> a. 分かりやすい地図を書いて送る。あるいは誰かほかの人に説明してもらう</label><br>
-        <label><input type="radio" name="q3" value="b"> b. そこから何が見えるか尋ね、それを手掛かりに道順を説明する</label><br>
-        <label><input type="radio" name="q3" value="c"> c. 行き方を口頭で説明する。「●●ビルの角を右に曲がって、3番目の信号を・・・」</label><br>
-        <label><input type="radio" name="q3" value="none"> あてはまるものはない</label>
-    </li>
-
-    <li>
-        <p>考えや概念を説明するとき、あなたがよくやるのは？</p>
-        <label><input type="radio" name="q4" value="a"> a. ペンと紙を使い、身振りを交えて説明する</label><br>
-        <label><input type="radio" name="q4" value="b"> b. 身振り手振りを交えながら、言葉で説明する</label><br>
-        <label><input type="radio" name="q4" value="c"> c. 明快でわかりやすい言葉を使って説明する</label><br>
-        <label><input type="radio" name="q4" value="none"> あてはまるものはない</label>
-    </li>
-
-    <li>
-        <p>映画を見てすごく感動した。家に帰ったあなたは・・・</p>
-        <label><input type="radio" name="q5" value="a"> a. その映画の場面を思い浮かべる</label><br>
-        <label><input type="radio" name="q5" value="b"> b. 感動したシーンやセリフについて語る</label><br>
-        <label><input type="radio" name="q5" value="c"> c. その映画の評判をもっぱら引用する</label><br>
-        <label><input type="radio" name="q5" value="none"> あてはまるものはない</label>
-    </li>
-
-    <li>
-        <p>映画館で座る場所は？</p>
-        <label><input type="radio" name="q6" value="a"> a. スクリーンに向かって右側の席</label><br>
-        <label><input type="radio" name="q6" value="b"> b. どこでもかまわない</label><br>
-        <label><input type="radio" name="q6" value="c"> c. スクリーンに向かって左側の席</label><br>
-        <label><input type="radio" name="q6" value="none"> あてはまるものはない</label>
-    </li>
-
-    <li>
-        <p>友人の持っている機会がうまく動かない。あなたならどうする？</p>
-        <label><input type="radio" name="q7" value="a"> a. 同情して友人がどんな気持ちに寄り添う</label><br>
-        <label><input type="radio" name="q7" value="b"> b. 直せそうな人を紹介する</label><br>
-        <label><input type="radio" name="q7" value="c"> c. 仕組みを探り、自力で直そうとする</label><br>
-        <label><input type="radio" name="q7" value="none"> あてはまるものはない</label>
-    </li>
-
-    <li>
-        <p>初めて訪れる場所で、通行人に北の方角はどちらですか？と尋ねられた。あなたならどうする？</p>
-        <label><input type="radio" name="q8" value="a"> a. 分からないと正直に伝える</label><br>
-        <label><input type="radio" name="q8" value="b"> b. 少し考えて、適当に答える</label><br>
-        <label><input type="radio" name="q8" value="c"> c. 確信をもって北の方角を指す</label><br>
-        <label><input type="radio" name="q8" value="none"> あてはまるものはない</label>
-    </li>
-
-    <li>
-        <p>運転中に駐車スペースを見つけた。でもバックじゃないと止められない。あなたならどうする？</p>
-        <label><input type="radio" name="q9" value="a"> a. 他の場所を探す</label><br>
-        <label><input type="radio" name="q9" value="b"> b. 慎重に車を入れる</label><br>
-        <label><input type="radio" name="q9" value="c"> c. 苦も無く車を入れる</label><br>
-        <label><input type="radio" name="q9" value="none"> あてはまるものはない</label>
-    </li>
-
-    <li>
-        <p>テレビを見ているときに電話が鳴った。あなたならどうする？</p>
-        <label><input type="radio" name="q10" value="a"> a. テレビはそのままにして電話に出る</label><br>
-        <label><input type="radio" name="q10" value="b"> b. テレビの音量を下げて電話に出る</label><br>
-        <label><input type="radio" name="q10" value="c"> c. テレビを消して、静かな場所に移動して電話に出る</label><br>
-        <label><input type="radio" name="q10" value="none"> あてはまるものはない</label>
-    </li>
-
-    <li>
-        <p>好きなアーティストの新曲を初めて聴いた。あなたは・・・</p>
-        <label><input type="radio" name="q11" value="a"> a. 全部または一部分を思い出して歌える</label><br>
-        <label><input type="radio" name="q11" value="b"> b. 難しい曲でなければ、一部分を思い出して歌える</label><br>
-        <label><input type="radio" name="q11" value="c"> c. メロディはなかなか覚えられないが、歌詞の一部なら思い出せる</label><br>
-        <label><input type="radio" name="q11" value="none"> あてはまるものはない</label>
-    </li>
-
-    <li>
-        <p>予想が当たるのは、もっぱら・・・</p>
-        <label><input type="radio" name="q12" value="a"> a. 直感に頼ったとき</label><br>
-        <label><input type="radio" name="q12" value="b"> b. 手に入る情報と、「本能的な」感覚に基づいて判断したとき</label><br>
-        <label><input type="radio" name="q12" value="c"> c. 事実、統計、データを参考にしたとき</label><br>
-        <label><input type="radio" name="q12" value="none"> あてはまるものはない</label>
-    </li>
-
-    <li>
-        <p>鍵をどこに置いたかわからなくなった。そのときあなたは・・・</p>
-        <label><input type="radio" name="q13" value="a"> a. 自然に思い出すまで別のことをする</label><br>
-        <label><input type="radio" name="q13" value="b"> b. 別のことをしながら、懸命に思い出そうとする</label><br>
-        <label><input type="radio" name="q13" value="c"> c. 自分の足取りを思い起こして、どこに置いたか突き止めようとする</label><br>
-        <label><input type="radio" name="q13" value="none"> あてはまるものはない</label>
-    </li>
-
-    <li>
-        <p>ホテルの部屋にいるとき、遠くからサイレンが聞こえてきた。</p>
-        <label><input type="radio" name="q14" value="a"> a. 音がどの方向から聞こえてくるか全くわからない</label><br>
-        <label><input type="radio" name="q14" value="b"> b. 神経を集中させて聞けば、大体どの方向から鳴っているか分かる</label><br>
-        <label><input type="radio" name="q14" value="c"> c. 音がどの方向から聞こえるか、すぐにわかる</label><br>
-        <label><input type="radio" name="q14" value="none"> あてはまるものはない</label>
-    </li>
-
-    <li>
-        <p>ある集まりで、初対面の人を7～8人紹介された。翌日あなたは・・・</p>
-        <label><input type="radio" name="q15" value="a"> a. 全員の顔をはっきり思い出せる</label><br>
-        <label><input type="radio" name="q15" value="b"> b. 何人かは思い出せる</label><br>
-        <label><input type="radio" name="q15" value="c"> c. 顔より名前の方を覚えている</label><br>
-        <label><input type="radio" name="q15" value="none"> あてはまるものはない</label>
-    </li>
-
-    <li>
-        <p>休日にあなたは絶景スポットに行きたいが、パートナーはテーマパークを希望している。絶景スポットの方がいいと相手に納得してもらうためにはどうする？</p>
-        <label><input type="radio" name="q16" value="a"> a. 自分の心情を訴える。絶景スポットなら自分も子供も楽しく過ごせて、家族みんな満足するという</label><br>
-        <label><input type="radio" name="q16" value="b"> b. 今回は譲ってくれたら恩に着る、次は絶対テーマパークにするからという</label><br>
-        <label><input type="radio" name="q16" value="c"> c. 有利な事実を持ち出す。絶景スポットの方が安いし、人混みの無い自然に癒されていいと主張する</label><br>
-        <label><input type="radio" name="q16" value="none"> あてはまるものはない</label>
-    </li>
-
-    <li>
-        <p>今日何をするか考えるとき、あなたならどうする？</p>
-        <label><input type="radio" name="q17" value="a"> a. 片付けなければならない用事が一目で分かるように一覧にする</label><br>
-        <label><input type="radio" name="q17" value="b"> b. やるべきことを思い浮かべる</label><br>
-        <label><input type="radio" name="q17" value="c"> c. 今日会う人、行く場所、やることを思い描く</label><br>
-        <label><input type="radio" name="q17" value="none"> あてはまるものはない</label>
-    </li>
-
-    <li>
-        <p>友人が悩みを相談しにやってきた。あなたならどうする？</p>
-        <label><input type="radio" name="q18" value="a"> a. 同情と理解を示す</label><br>
-        <label><input type="radio" name="q18" value="b"> b. 悩みというのは本人が思っているほど深刻ではない。なぜなら・・と説明する</label><br>
-        <label><input type="radio" name="q18" value="c"> c. 問題解決のための合理的な提案とアドバイスをする</label><br>
-        <label><input type="radio" name="q18" value="none"> あてはまるものはない</label>
-    </li>
-
-    <li>
-        <p>友人同士がひそかに不倫しているようだ</p>
-        <label><input type="radio" name="q19" value="a"> a. かなり早い段階で気づく</label><br>
-        <label><input type="radio" name="q19" value="b"> b. 途中で気づく</label><br>
-        <label><input type="radio" name="q19" value="c"> c. 多分知らないまま</label><br>
-        <label><input type="radio" name="q19" value="none"> あてはまるものはない</label>
-    </li>
-
-    <li>
-        <p>あなたにとって人生とはどういうもの？</p>
-        <label><input type="radio" name="q20" value="a"> a. 友人をたくさん作って、周囲と協調すること</label><br>
-        <label><input type="radio" name="q20" value="b"> b. 周囲の人達とうまくやりながら、個人としての自立は守ること</label><br>
-        <label><input type="radio" name="q20" value="c"> c. 有意義な目標を実現し、周囲から尊敬を得て、出世すること</label><br>
-        <label><input type="radio" name="q20" value="none"> あてはまるものはない</label>
-    </li>
-
-    <li>
-        <p>あなたにとって望ましい仕事のやりかたは？</p>
-        <label><input type="radio" name="q21" value="a"> a. メンバーが適宜入れ替わるチームで働くこと</label><br>
-        <label><input type="radio" name="q21" value="b"> b. みんなと同じ場所で、ただし自分だけのスペースは確保して仕事すること</label><br>
-        <label><input type="radio" name="q21" value="c"> c. 自分ひとりで進める</label><br>
-        <label><input type="radio" name="q21" value="none"> あてはまるものはない</label>
-    </li>
-
-    <li>
-        <p>好きな本のジャンルは？</p>
-        <label><input type="radio" name="q22" value="a"> a. 小説などのフィクション</label><br>
-        <label><input type="radio" name="q22" value="b"> b. 新聞や雑誌</label><br>
-        <label><input type="radio" name="q22" value="c"> c. 自伝などのノンフィクション</label><br>
-        <label><input type="radio" name="q22" value="none"> あてはまるものはない</label>
-    </li>
-
-    <li>
-        <p>あなたの買い物の仕方は？</p>
-        <label><input type="radio" name="q23" value="a"> a. 衝動的。とりわけ「お買い得」というワードに弱い</label><br>
-        <label><input type="radio" name="q23" value="b"> b. おおよその計画は立てるが、あとは成り行きに任せる</label><br>
-        <label><input type="radio" name="q23" value="c"> c. 表示を念入りに読み、値段を比べる</label><br>
-        <label><input type="radio" name="q23" value="none"> あてはまるものはない</label>
-    </li>
-
-    <li>
-        <p>起床や食事は・・</p>
-        <label><input type="radio" name="q24" value="a"> a. 好きな時間にする</label><br>
-        <label><input type="radio" name="q24" value="b"> b. だいだいの時間は決まっているが、ずれることも多い</label><br>
-        <label><input type="radio" name="q24" value="c"> c. 毎日ほぼ決まった時間である</label><br>
-        <label><input type="radio" name="q24" value="none"> あてはまるものはない</label>
-    </li>
-
-    <li>
-        <p>転職して間もないとき、新しい同僚の一人から電話がかかってきた。あなたは・・・</p>
-        <label><input type="radio" name="q25" value="a"> a. 相手が誰かすぐにわかる</label><br>
-        <label><input type="radio" name="q25" value="b"> b. しばらく話せば誰かわかる</label><br>
-        <label><input type="radio" name="q25" value="c"> c. 声だけでは誰かわからない</label><br>
-        <label><input type="radio" name="q25" value="none"> あてはまるものはない</label>
-    </li>
-
-    <li>
-        <p>口論しているときに一番むかつく相手の態度は？</p>
-        <label><input type="radio" name="q26" value="a"> a. 沈黙、あるいは無反応</label><br>
-        <label><input type="radio" name="q26" value="b"> b. あなたの考え方を理解してもらえないこと</label><br>
-        <label><input type="radio" name="q26" value="c"> c. 挑戦的、あるいは鋭い指摘や意見</label><br>
-        <label><input type="radio" name="q26" value="none"> あてはまるものはない</label>
-    </li>
-
-    <li>
-        <p>学校の漢字テストや作文の課題は・・・</p>
-        <label><input type="radio" name="q27" value="a"> a. 楽々とこなしていた</label><br>
-        <label><input type="radio" name="q27" value="b"> b. どちらかだけ点がよかった</label><br>
-        <label><input type="radio" name="q27" value="c"> c. どちらも苦手だった</label><br>
-        <label><input type="radio" name="q27" value="none"> あてはまるものはない</label>
-    </li>
-
-    <li>
-        <p>ダンスを踊るとき・・・</p>
-        <label><input type="radio" name="q28" value="a"> a. ステップを覚えないと音楽にノれない</label><br>
-        <label><input type="radio" name="q28" value="b"> b. 身体を動かすことはできるが、周りの動きと合わない</label><br>
-        <label><input type="radio" name="q28" value="c"> c. リズムについていけない</label><br>
-        <label><input type="radio" name="q28" value="none"> あてはまるものはない</label>
-    </li>
-
-    <li>
-        <p>動物の声や音を聞き分けたり、真似したりするのは・・・</p>
-        <label><input type="radio" name="q29" value="a"> a. 得意</label><br>
-        <label><input type="radio" name="q29" value="b"> b. そこそこ得意</label><br>
-        <label><input type="radio" name="q29" value="c"> c. あまり得意じゃない</label><br>
-        <label><input type="radio" name="q29" value="none"> あてはまるものはない</label>
-    </li>
-
-    <li>
-        <p>さんざんな目にあった日は、どうしたくなる？</p>
-        <label><input type="radio" name="q30" value="a"> a. 友人や家族にその日のことをぶちまける</label><br>
-        <label><input type="radio" name="q30" value="b"> b. 友人などにどんな日を過ごしたか聞く</label><br>
-        <label><input type="radio" name="q30" value="c"> c. 自分の趣味に興じる。他人に話したりはしない</label><br>
-        <label><input type="radio" name="q30" value="none"> あてはまるものはない</label>
-    </li>
-  </ol>
-    <button type="button" onclick="calculateScore()">結果を見る</button>
-  </form>
-
-  <h2 id="result"></h2>
+<form id="quizForm"></form>
+<div id="result"></div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxe7oZJ15AhQFh1L5fxBEWiu_J5TD0GsKtW8ffYRRNqCAfRZkNTEjkkI7plQAc6yVaxEQ/exec";
+const questions = [
+  { text: "マップや市街図を見るとき", options: { 
+      a:"なかなか理解できなくて、結局誰かに聞いてしまう",
+      b:"そんなものは見ずに、自分の行きたい道を行く",
+      c:"なんの苦も無く理解できる",
+      none:"あてはまるものはない"
+    } 
+  },
+  { text: "ラジオの鳴っているキッチンで、手の込んだ料理を作っている。そこに友人から電話がかかってきた", options: {
+      a:"友人と電話で話しながら、料理を続ける。ラジオもそのまま。",
+      b:"ラジオを消して、友人と話しながら料理を続ける",
+      c:"「料理中だから、終わったらかけなおす」と言って電話を切る",
+      none:"あてはまるものはない"
+    } 
+  },
+  { text: "あなたの家を初めて訪れる友人に、行き方を聞かれたら？", options: {
+      a:"分かりやすい地図を書いて送る。あるいは誰かほかの人に説明してもらう",
+      b:"そこから何が見えるか尋ね、それを手掛かりに道順を説明する",
+      c:"行き方を口頭で説明する。「●●ビルの角を右に曲がって、3番目の信号を・・・」",
+      none:"あてはまるものはない"
+    } 
+  },
+  { text: "考えや概念を説明するとき、あなたがよくやるのは？", options: {
+      a:"ペンと紙を使い、身振りを交えて説明する",
+      b:"身振り手振りを交えながら、言葉で説明する",
+      c:"明快でわかりやすい言葉を使って説明する",
+      none:"あてはまるものはない"
+    } 
+  },
+  { text: "映画を見てすごく感動した。家に帰ったあなたは・・・", options: {
+      a:"その映画の場面を思い浮かべる",
+      b:"感動したシーンやセリフについて語る",
+      c:"その映画の評判をもっぱら引用する",
+      none:"あてはまるものはない"
+    } 
+  },
+  { text: "映画館で座る場所は？", options: {
+      a:"スクリーンに向かって右側の席",
+      b:"どこでもかまわない",
+      c:"スクリーンに向かって左側の席",
+      none:"あてはまるものはない"
+    } 
+  },
+  { text: "友人の持っている機会がうまく動かない。あなたならどうする？", options: {
+      a:"同情して友人がどんな気持ちに寄り添う",
+      b:"直せそうな人を紹介する",
+      c:"仕組みを探り、自力で直そうとする",
+      none:"あてはまるものはない"
+    } 
+  },
+  { text: "初めて訪れる場所で、通行人に北の方角はどちらですか？と尋ねられた。あなたならどうする？", options: {
+      a:"分からないと正直に伝える",
+      b:"少し考えて、適当に答える",
+      c:"確信をもって北の方角を指す",
+      none:"あてはまるものはない"
+    } 
+  },
+  { text: "運転中に駐車スペースを見つけた。でもバックじゃないと止められない。あなたならどうする？", options: {
+      a:"他の場所を探す",
+      b:"慎重に車を入れる",
+      c:"苦も無く車を入れる",
+      none:"あてはまるものはない"
+    } 
+  },
+  { text: "テレビを見ているときに電話が鳴った。あなたならどうする？", options: {
+      a:"テレビはそのままにして電話に出る",
+      b:"テレビの音量を下げて電話に出る",
+      c:"テレビを消して、静かな場所に移動して電話に出る",
+      none:"あてはまるものはない"
+    } 
+  },
+  { text: "好きなアーティストの新曲を初めて聴いた。あなたは・・・", options: {
+      a:"全部または一部分を思い出して歌える",
+      b:"難しい曲でなければ、一部分を思い出して歌える",
+      c:"メロディはなかなか覚えられないが、歌詞の一部なら思い出せる",
+      none:"あてはまるものはない"
+    } 
+  },
+  { text: "予想が当たるのは、もっぱら・・・", options: {
+      a:"直感に頼ったとき",
+      b:"手に入る情報と、「本能的な」感覚に基づいて判断したとき",
+      c:"事実、統計、データを参考にしたとき",
+      none:"あてはまるものはない"
+    } 
+  },
+  { text: "鍵をどこに置いたかわからなくなった。そのときあなたは・・・", options: {
+      a:"自然に思い出すまで別のことをする",
+      b:"別のことをしながら、懸命に思い出そうとする",
+      c:"自分の足取りを思い起こして、どこに置いたか突き止めようとする",
+      none:"あてはまるものはない"
+    } 
+  },
+  { text: "ホテルの部屋にいるとき、遠くからサイレンが聞こえてきた。", options: {
+      a:"音がどの方向から聞こえてくるか全くわからない",
+      b:"神経を集中させて聞けば、大体どの方向から鳴っているか分かる",
+      c:"音がどの方向から聞こえるか、すぐにわかる",
+      none:"あてはまるものはない"
+    } 
+  },
+  { text: "ある集まりで、初対面の人を7～8人紹介された。翌日あなたは・・・", options: {
+      a:"全員の顔をはっきり思い出せる",
+      b:"何人かは思い出せる",
+      c:"顔より名前の方を覚えている",
+      none:"あてはまるものはない"
+    } 
+  },
+  { text: "休日にあなたは絶景スポットに行きたいが、パートナーはテーマパークを希望している。絶景スポットの方がいいと相手に納得してもらうためにはどうする？", options: {
+      a:"自分の心情を訴える。絶景スポットなら自分も子供も楽しく過ごせて、家族みんな満足するという",
+      b:"今回は譲ってくれたら恩に着る、次は絶対テーマパークにするからという",
+      c:"有利な事実を持ち出す。絶景スポットの方が安いし、人混みの無い自然に癒されていいと主張する",
+      none:"あてはまるものはない"
+    } 
+  },
+  { text: "今日何をするか考えるとき、あなたならどうする？", options: {
+      a:"片付けなければならない用事が一目で分かるように一覧にする",
+      b:"やるべきことを思い浮かべる",
+      c:"今日会う人、行く場所、やることを思い描く",
+      none:"あてはまるものはない"
+    } 
+  },
+  { text: "友人が悩みを相談しにやってきた。あなたならどうする？", options: {
+      a:"同情と理解を示す",
+      b:"悩みというのは本人が思っているほど深刻ではない。なぜなら・・と説明する",
+      c:"問題解決のための合理的な提案とアドバイスをする",
+      none:"あてはまるものはない"
+    } 
+  },
+  { text: "友人同士がひそかに不倫しているようだ", options: {
+      a:"かなり早い段階で気づく",
+      b:"途中で気づく",
+      c:"多分知らないまま",
+      none:"あてはまるものはない"
+    } 
+  },
+  { text: "あなたにとって人生とはどういうもの？", options: {
+      a:"友人をたくさん作って、周囲と協調すること",
+      b:"周囲の人達とうまくやりながら、個人としての自立は守ること",
+      c:"有意義な目標を実現し、周囲から尊敬を得て、出世すること",
+      none:"あてはまるものはない"
+    } 
+  },
+  { text: "あなたにとって望ましい仕事のやりかたは？", options: {
+      a:"メンバーが適宜入れ替わるチームで働くこと",
+      b:"みんなと同じ場所で、ただし自分だけのスペースは確保して仕事すること",
+      c:"自分ひとりで進める",
+      none:"あてはまるものはない"
+    } 
+  },
+  { text: "好きな本のジャンルは？", options: {
+      a:"小説などのフィクション",
+      b:"新聞や雑誌",
+      c:"自伝などのノンフィクション",
+      none:"あてはまるものはない"
+    } 
+  },
+  { text: "あなたの買い物の仕方は？", options: {
+      a:"衝動的。とりわけ「お買い得」というワードに弱い",
+      b:"おおよその計画は立てるが、あとは成り行きに任せる",
+      c:"表示を念入りに読み、値段を比べる",
+      none:"あてはまるものはない"
+    } 
+  },
+  { text: "起床や食事は・・", options: {
+      a:"好きな時間にする",
+      b:"だいだいの時間は決まっているが、ずれることも多い",
+      c:"毎日ほぼ決まった時間である",
+      none:"あてはまるものはない"
+    } 
+  },
+  { text: "転職して間もないとき、新しい同僚の一人から電話がかかってきた。あなたは・・・", options: {
+      a:"相手が誰かすぐにわかる",
+      b:"しばらく話せば誰かわかる",
+      c:"声だけでは誰かわからない",
+      none:"あてはまるものはない"
+    } 
+  },
+  { text: "口論しているときに一番むかつく相手の態度は？", options: {
+      a:"沈黙、あるいは無反応",
+      b:"あなたの考え方を理解してもらえないこと",
+      c:"挑戦的、あるいは鋭い指摘や意見",
+      none:"あてはまるものはない"
+    } 
+  },
+  { text: "学校の漢字テストや作文の課題は・・・", options: {
+      a:"楽々とこなしていた",
+      b:"どちらかだけ点がよかった",
+      c:"どちらも苦手だった",
+      none:"あてはまるものはない"
+    } 
+  },
+  { text: "ダンスを踊るとき・・・", options: {
+      a:"ステップを覚えないと音楽にノれない",
+      b:"身体を動かすことはできるが、周りの動きと合わない",
+      c:"リズムについていけない",
+      none:"あてはまるものはない"
+    } 
+  },
+  { text: "動物の声や音を聞き分けたり、真似したりするのは・・・", options: {
+      a:"得意",
+      b:"そこそこ得意",
+      c:"あまり得意じゃない",
+      none:"あてはまるものはない"
+    } 
+  },
+  { text: "さんざんな目にあった日は、どうしたくなる？", options: {
+      a:"友人や家族にその日のことをぶちまける",
+      b:"友人などにどんな日を過ごしたか聞く",
+      c:"自分の趣味に興じる。他人に話したりはしない",
+      none:"あてはまるものはない"
+    } 
+  }
+];
 
-function calculateScore() {
+// スコア加点ルール
+const scoreMap = {
+  male: {a:10, b:5, c:-5, none:5},
+  female: {a:15, b:5, c:-5, none:5}
+};
+
+const form = document.getElementById("quizForm");
+const resultDiv = document.getElementById("result");
+const userInfoDiv = document.getElementById("userInfo");
+
+// 診断開始ボタン
+document.getElementById("startBtn").addEventListener("click", () => {
+  const name = document.getElementById("name").value.trim();
   const gender = document.getElementById("gender").value;
-  const name = document.getElementById("username").value.trim();
+  if(!name || !gender){ alert("名前と性別を入力してください"); return; }
+  userInfoDiv.style.display = "none";
+  generateQuestions();
+});
+
+// 設問生成
+function generateQuestions(){
+  questions.forEach((q, index) => {
+    const div = document.createElement("div");
+    div.classList.add("question");
+    if(index===0) div.classList.add("active");
+
+    const p = document.createElement("p");
+    p.textContent = `${index+1}問目: ${q.text}`;
+    div.appendChild(p);
+
+    Object.entries(q.options).forEach(([key, label]) => {
+      const labelEl = document.createElement("label");
+      labelEl.innerHTML = `<input type="radio" name="q${index+1}" value="${key}"><span>${label}</span>`;
+      div.appendChild(labelEl);
+    });
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.classList.add("btn");
+    btn.textContent = (index===questions.length-1) ? "結果を見る" : "次へ";
+    btn.addEventListener("click", () => nextQuestion(index));
+    div.appendChild(btn);
+
+    form.appendChild(div);
+  });
+}
+
+// ページ送り処理
+function nextQuestion(currentIndex){
+  const currentQ = document.querySelectorAll(".question")[currentIndex];
+  const selected = currentQ.querySelector("input[type=radio]:checked");
+  if(!selected){ alert("回答を選択してください"); return; }
+  currentQ.classList.remove("active");
+
+  if(currentIndex < questions.length-1){
+    document.querySelectorAll(".question")[currentIndex+1].classList.add("active");
+  }else{
+    showResult();
+  }
+}
+
+// 結果表示と送信
+function showResult(){
+  const name = document.getElementById("name").value.trim();
+  const gender = document.getElementById("gender").value;
+  const answers = {};
   let score = 0;
 
-  for (let i = 1; i <= 30; i++) {
-    const answer = document.querySelector(`input[name="q${i}"]:checked`);
-    if (!answer) continue;
+  questions.forEach((q,index)=>{
+    const selected = document.querySelector(`input[name=q${index+1}]:checked`).value;
+    answers[`q${index+1}`] = selected;
+    score += scoreMap[gender][selected];
+  });
 
-    if (gender === "male") {
-      if (answer.value === "a") score += 10;
-      else if (answer.value === "b") score += 5;
-      else if (answer.value === "c") score -= 5;
-      else if (answer.value === "none") score += 5;
-    } else {
-      if (answer.value === "a") score += 15;
-      else if (answer.value === "b") score += 5;
-      else if (answer.value === "c") score -= 5;
-      else if (answer.value === "none") score += 5;
-    }
-  }
-
+  // 判定
   let resultText = "";
-  if (score <= -1) resultText = "完全な男脳";
-  else if (score <= 150) resultText = "男脳";
-  else if (score <= 180) resultText = "中性脳";
-  else if (score <= 300) resultText = "女脳";
+  if(score <= -1) resultText = "完全な男脳";
+  else if(score <= 150) resultText = "男脳";
+  else if(score <= 180) resultText = "中性脳";
+  else if(score <= 300) resultText = "女脳";
   else resultText = "完全な女脳";
 
-  document.getElementById("result").textContent = 
-    `【${name}さん】 合計 ${score} 点 → ${resultText}`;
+  resultDiv.style.display = "block";
+  resultDiv.innerHTML = `<h2>${resultText}</h2><p>合計スコア: ${score}点</p>`;
 
-  // スプレッドシートに送信
-fetch(SCRIPT_URL, {
-  method: "POST",
-  body: JSON.stringify({
-    name: name,
-    gender: gender,
-    result: resultText
-  })
-})
-.then(res => res.json())
-.then(data => console.log("保存結果:", data))
-.catch(err => console.error("エラー:", err));
+  form.style.display = "none";
+
+  // GAS送信
+  fetch("https://script.google.com/macros/s/AKfycbxe7oZJ15AhQFh1L5fxBEWiu_J5TD0GsKtW8ffYRRNqCAfRZkNTEjkkI7plQAc6yVaxEQ/exec", {
+    method: "POST",
+    body: JSON.stringify({ name, gender, score, answers }),
+    headers: { "Content-Type": "application/json" }
+  }).then(r=>r.json()).then(console.log).catch(console.error);
 }
 </script>
-
 </body>
 </html>
